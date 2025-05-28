@@ -32,6 +32,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Run hello.py
-        run: python3 ./hello.py
+      
+      - name: Install dependencies
+        run: |
+         python3 -m pip install --upgrade pip
+         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+         # urllib3 에서 six 모듈 지원이 중단되어, 1.x 버전을 사용하도록 재설치
+         pip3 uninstall -y urllib3
+         pip3 install "urllib3<2"
+      - name: Run main.py
+        run: |
+         python3 main.py
+        env:
+         MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
